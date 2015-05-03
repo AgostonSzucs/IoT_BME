@@ -1,5 +1,5 @@
-all: udp-server-bme
-APPS=udp-server-bme
+all: udp-server udp-client
+APPS=udp-server udp-client
 
 TARGET=iotlab-m3
 
