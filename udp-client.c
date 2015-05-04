@@ -91,7 +91,7 @@ send_packet(void *ptr)
 {
   static int seq_id;
   char buf[MAX_PAYLOAD_LEN];
-	unsigned int pressure = pressure_sensor.value(0);
+	unsigned int pressure = (unsigned int)(pressure_sensor.value(0)/4096);
 
   seq_id++;
   PRINTF("DATA send to %d 'Hello %d' my pressure is %d\n",
