@@ -67,11 +67,11 @@ tcpip_handler(void)
     appdata = (char *)uip_appdata;
     appdata[uip_datalen()] = 0;
     token = strtok(appdata,delimiter);
-    PRINTF("DATA recv '%s' from ", token[0]);
+    PRINTF("DATA recv '%s'", appdata);
     PRINTF("%d",
            UIP_IP_BUF->srcipaddr.u8[sizeof(UIP_IP_BUF->srcipaddr.u8) - 1]);
     PRINTF("\n");
- 	PRINTF("The pressure of the mote was %s \n", token[1]);
+ 	//PRINTF("The pressure of the mote was %s \n", token[1]);
 #if SERVER_REPLY
     PRINTF("DATA sending reply\n");
     uip_ipaddr_copy(&server_conn->ripaddr, &UIP_IP_BUF->srcipaddr);
