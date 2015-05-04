@@ -99,7 +99,7 @@ send_packet(void *ptr)
   sprintf(buf, "%d %d", seq_id,pressure);
   uip_udp_packet_sendto(client_conn, buf, strlen(buf),
                         &server_ipaddr, UIP_HTONS(UDP_SERVER_PORT));
-  PRINTF("Sending to server, address:  ");
+  // PRINTF("Sending to server, address:  ");
   PRINT6ADDR(&server_ipaddr);
   PRINTF("\n");
   
