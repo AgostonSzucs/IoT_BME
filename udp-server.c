@@ -49,11 +49,11 @@
 #define UDP_SERVER_PORT	5678
 
 #define UDP_EXAMPLE_ID  190
-#define MAX_ARRAY_SIZE 200
+#define MAX_ARRAY_SIZE 2000
 
 static struct uip_udp_conn *server_conn;
-static char temperatures[MAX_ARRAY_SIZE];
-static int temp_counter = 0;
+static char pressure[MAX_ARRAY_SIZE];
+static int pressure_counter = 0;
 
 PROCESS(udp_server_process, "UDP server process");
 AUTOSTART_PROCESSES(&udp_server_process);
@@ -62,18 +62,21 @@ AUTOSTART_PROCESSES(&udp_server_process);
 static void
 tcpip_handler(void)
 {
-  char *appdata;
+    char *token;
+    char *appdata;
+    char *delimiter = " "; 
 
   if(uip_newdata()) {
     appdata = (char *)uip_appdata;
     appdata[uip_datalen()] = 0;
-    temperatures[temp_counter] = appdata[(strlen(appdata)-1)];
-    PRINTF("DATA recv '%s' from ", appdata);
+    token = strtok(appdata,delimiter);
+    pressure[pressure_counter] = token[1];
+    PRINTF("DATA recv '%s' from ", token[0]);
     PRINTF("%d",
            UIP_IP_BUF->srcipaddr.u8[sizeof(UIP_IP_BUF->srcipaddr.u8) - 1]);
     PRINTF("\n");
- 	PRINTF("The temperature of the mote was %c \n", temperatures[temp_counter]);
-	PRINTF("position %d\n",++temp_counter);
+ 	PRINTF("The pressure of the mote was %s \n", pressure[pressure_counter]);
+	PRINTF("position %d\n",++pressure_counter);
 #if SERVER_REPLY
     PRINTF("DATA sending reply\n");
     uip_ipaddr_copy(&server_conn->ripaddr, &UIP_IP_BUF->srcipaddr);
@@ -183,8 +186,8 @@ PROCESS_THREAD(udp_server_process, ev, data)
     PROCESS_YIELD();
     if(ev == tcpip_event) {
       tcpip_handler();
-      printf("Current temperatures: %s \n",temperatures);
-     /* print_array(temperatures);*/
+      printf("Current pressures: %s \n",pressure);
+     /* print_array(pressure);*/
     } else if (ev == sensors_event && data == &button_sensor) {
       PRINTF("Initiaing global repair\n");
       rpl_repair_root(RPL_DEFAULT_INSTANCE);

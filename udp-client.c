@@ -35,9 +35,7 @@
 #include "net/uip-udp-packet.h"
 #include "sys/ctimer.h"
 #include "dev/leds.h"
-#include "dev/temperature-sensor.h"
-#include "dev/temperature-sensor.c"
-#include "dev/sky-sensors.h"
+#include "dev/pressure-sensor.h"
 
 #ifdef WITH_COMPOWER
 #include "powertrace.h"
@@ -93,12 +91,12 @@ send_packet(void *ptr)
 {
   static int seq_id;
   char buf[MAX_PAYLOAD_LEN];
-	unsigned int temp = temperature_sensor.value(0);
+	unsigned int pressure = pressure_sensor.value(0);
 
   seq_id++;
-  PRINTF("DATA send to %d 'Hello %d' my temperature is %d\n",
-         server_ipaddr.u8[sizeof(server_ipaddr.u8) - 1], seq_id,temp);
-  sprintf(buf, "Hello %d temp: %d", seq_id,temp);
+  PRINTF("DATA send to %d 'Hello %d' my pressure is %d\n"
+         server_ipaddr.u8[sizeof(server_ipaddr.u8) - 1], seq_id,pressure);
+  sprintf(buf, "%d %d", seq_id,pressure);
   uip_udp_packet_sendto(client_conn, buf, strlen(buf),
                         &server_ipaddr, UIP_HTONS(UDP_SERVER_PORT));
   PRINTF("Sending to server, address:  ");
