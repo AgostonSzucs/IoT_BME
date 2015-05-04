@@ -49,11 +49,8 @@
 #define UDP_SERVER_PORT	5678
 
 #define UDP_EXAMPLE_ID  190
-#define MAX_ARRAY_SIZE 2000
 
 static struct uip_udp_conn *server_conn;
-static char pressure[MAX_ARRAY_SIZE];
-static int pressure_counter = 0;
 
 PROCESS(udp_server_process, "UDP server process");
 AUTOSTART_PROCESSES(&udp_server_process);
@@ -70,13 +67,11 @@ tcpip_handler(void)
     appdata = (char *)uip_appdata;
     appdata[uip_datalen()] = 0;
     token = strtok(appdata,delimiter);
-    pressure[pressure_counter] = token[1];
     PRINTF("DATA recv '%s' from ", token[0]);
     PRINTF("%d",
            UIP_IP_BUF->srcipaddr.u8[sizeof(UIP_IP_BUF->srcipaddr.u8) - 1]);
     PRINTF("\n");
- 	PRINTF("The pressure of the mote was %s \n", pressure[pressure_counter]);
-	PRINTF("position %d\n",++pressure_counter);
+ 	PRINTF("The pressure of the mote was %s \n", token[1]);
 #if SERVER_REPLY
     PRINTF("DATA sending reply\n");
     uip_ipaddr_copy(&server_conn->ripaddr, &UIP_IP_BUF->srcipaddr);
@@ -186,8 +181,6 @@ PROCESS_THREAD(udp_server_process, ev, data)
     PROCESS_YIELD();
     if(ev == tcpip_event) {
       tcpip_handler();
-      printf("Current pressures: %s \n",pressure);
-     /* print_array(pressure);*/
     } else if (ev == sensors_event && data == &button_sensor) {
       PRINTF("Initiaing global repair\n");
       rpl_repair_root(RPL_DEFAULT_INSTANCE);
