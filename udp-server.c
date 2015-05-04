@@ -68,7 +68,7 @@ tcpip_handler(void)
     // appdata[uip_datalen()] = 0;
     // token = strtok(appdata,delimiter);
     PRINTF("%s\r\n", appdata);
-    PRINTF("%d",
+    PRINTF("From: %d",
            UIP_IP_BUF->srcipaddr.u8[sizeof(UIP_IP_BUF->srcipaddr.u8) - 1]);
     PRINTF("\n\n");
  	//PRINTF("The pressure of the mote was %s \n", token[1]);

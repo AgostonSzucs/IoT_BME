@@ -96,7 +96,7 @@ send_packet(void *ptr)
   seq_id++;
   PRINTF("DATA send to %d 'Hello %d' my pressure is %lu\n",
          server_ipaddr.u8[sizeof(server_ipaddr.u8) - 1], seq_id,pressure);
-  sprintf(buf, "%d %lu", seq_id,pressure);
+  sprintf(buf, "Pressure: %lu",pressure);
   uip_udp_packet_sendto(client_conn, buf, strlen(buf),
                         &server_ipaddr, UIP_HTONS(UDP_SERVER_PORT));
   // PRINTF("Sending to server, address:  ");
