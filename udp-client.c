@@ -94,7 +94,7 @@ send_packet(void *ptr)
 	unsigned int pressure = pressure_sensor.value(0);
 
   seq_id++;
-  PRINTF("DATA send to %d 'Hello %d' my pressure is %d\n"
+  PRINTF("DATA send to %d 'Hello %d' my pressure is %d\n",
          server_ipaddr.u8[sizeof(server_ipaddr.u8) - 1], seq_id,pressure);
   sprintf(buf, "%d %d", seq_id,pressure);
   uip_udp_packet_sendto(client_conn, buf, strlen(buf),
