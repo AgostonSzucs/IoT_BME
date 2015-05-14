@@ -91,12 +91,12 @@ send_packet(void *ptr)
 {
   static int seq_id;
   char buf[MAX_PAYLOAD_LEN];
-	uint32_t pressure = (uint32_t)(pressure_sensor.value(0)/4096);
+	float pressure = (float)(pressure_sensor.value(0)/PRESSURE_SENSOR_VALUE_SCALE);
 
   seq_id++;
-  PRINTF("DATA send to %d 'Hello %d' my pressure is %lu\n",
+  PRINTF("DATA send to %d 'Hello %d' my pressure is %f\n",
          server_ipaddr.u8[sizeof(server_ipaddr.u8) - 1], seq_id,pressure);
-  sprintf(buf, "Pressure: %lu",pressure);
+  sprintf(buf, "Pressure: %f",pressure);
   uip_udp_packet_sendto(client_conn, buf, strlen(buf),
                         &server_ipaddr, UIP_HTONS(UDP_SERVER_PORT));
   // PRINTF("Sending to server, address:  ");
@@ -126,6 +126,12 @@ print_local_addresses(void)
   }
 }
 /*---------------------------------------------------------------------------*/
+static void config_pressure()
+{
+  pressure_sensor.configure(PRESSURE_SENSOR_DATARATE, LPS331AP_P_12_5HZ_T_1HZ);
+  SENSORS_ACTIVATE(pressure_sensor);
+}
+
 static void
 set_global_address(void)
 {
@@ -169,9 +175,11 @@ PROCESS_THREAD(udp_client_process, ev, data)
 #endif
 
   PROCESS_BEGIN();
+	
+  config_pressure();
 
   PROCESS_PAUSE();
-
+	
   set_global_address();
   
   PRINTF("UDP client process started\n");
